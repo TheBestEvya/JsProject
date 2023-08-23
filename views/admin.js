@@ -1,4 +1,4 @@
-
+let products;
 jQuery(function(){
     loadProducts();
     $('input:radio[name="CategoryRadioOptions"]').on("change",function(){
@@ -72,7 +72,6 @@ jQuery(function(){
     }) 
 
     $(".presentation").on('click','.graphDisplay',()=>{
-        console.log("clicked");
         $("#my_dataviz").empty();
         //ADD HERE GRAPH D3  
         var margin = {top: 10, right: 30, bottom: 30, left: 40},
@@ -89,7 +88,7 @@ jQuery(function(){
         "translate(" + margin.left + "," + margin.top + ")");
 
         // get the data
-        // d3.json(products,(data){
+        // d3.json(products,function (data){
 
         // })
         d3.csv("https://raw.githubusercontent.com/holtzy/data_to_viz/master/Example_dataset/1_OneNum.csv", function(data) {
@@ -104,13 +103,14 @@ jQuery(function(){
 
             // set the parameters for the histogram
             var histogram = d3.histogram()
-            .value(function(d) { return d.price; })   // I need to give the vector of value
+            // .value(function(d) { return d.price; })   original
+            .value(function(d) { return d.price; }) // use number of orders of each product
             .domain(x.domain())  // then the domain of the graphic
             .thresholds(x.ticks(70)); // then the numbers of bins
 
             // And apply this function to data to get the bins
             var bins = histogram(data);
-
+            
             // Y axis: scale and draw:
             var y = d3.scaleLinear()
             .range([height, 0]);
@@ -198,8 +198,8 @@ function loadProducts(){
            
             let header = $('<tr><th>ID</th><th>Name</th><th>Price</th><th>Number Of Orders</th><th>Date Baked</th><th>Description</th></tr>') 
             $(".productTable").append(header);
-            var products = res.Products;
-            console.log(products)
+            products = res.Products;
+
             products.forEach(product => { 
                 let item = $('<tr class="product-item"></tr>');
                 let id = $('<td>'+product._id+'</td>');
